@@ -89,23 +89,25 @@ public class SpawnHandler {
 
     public void teleportPlayer(Player player) {
         if (spawnExists()) {
-            YamlConfiguration config = fileManager.getConfig();
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                YamlConfiguration config = fileManager.getConfig();
 
-            if (!config.getBoolean("fall-damage.enabled")) {
-                player.setFallDistance(0F);
-            }
+                if (!config.getBoolean("fall-damage.enabled")) {
+                    player.setFallDistance(0F);
+                }
 
-            Location spawnLocation = getSpawn();
-            if (config.getBoolean("use-player-head-rotation.enabled")) {
-                spawnLocation.setDirection(player.getLocation().getDirection());
-            }
+                Location spawnLocation = getSpawn();
+                if (config.getBoolean("use-player-head-rotation.enabled")) {
+                    spawnLocation.setDirection(player.getLocation().getDirection());
+                }
 
-            player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
+                player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-            spawnParticles(player);
-            playSound(player);
+                spawnParticles(player);
+                playSound(player);
 
-            messageManager.sendMessage(player, "teleport");
+                messageManager.sendMessage(player, "teleport");
+            });
         } else {
             messageManager.sendMessage(player, "no-spawn");
         }
@@ -163,4 +165,5 @@ public class SpawnHandler {
             }
         }
     }
+
 }
